@@ -96,6 +96,8 @@ export default function NotificationsPopover() {
       return;
     }
     const adminNotifications = data2.filter((item) => item.for_admin === true);
+    const userNotifications = data2.filter((item) => item.for_admin === false);
+    
     if (user) {
       if (adminNotifications.length && user.is_admin) {
         setNotifications(
@@ -115,8 +117,7 @@ export default function NotificationsPopover() {
       } else {
         console.log('No Admin Notifications found');
         setNotifications(
-          data2
-            .filter((c) => c.for_admin === false)
+            userNotifications
             .map((t) => ({
               id: t._id,
               title: 'Apply Now',

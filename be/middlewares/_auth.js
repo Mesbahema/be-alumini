@@ -10,6 +10,7 @@ const authCheck = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, key);
         req.user = decoded;
+        // console.log('req',req.user)
         next();
     } catch (err) {
         res.status(401).send({ error: 'Authentication error: invalid token' });

@@ -171,13 +171,14 @@ export default function JobPage() {
     });
 
     const data = await res.json();
+
     if (!res.ok) {
       console.log(data.error);
       return;
     }
 
-    const myData = data.filter((item) => item.is_approved === false);
-    setMyRows(myData);
+    // const myData = data.filter((item) => item.is_approved === false);
+    setMyRows(data);
   };
 
   useEffect(() => {
@@ -331,60 +332,61 @@ export default function JobPage() {
                 <TableBody>
                   {Array.isArray(myRows) && myRows.length
                     ? myRows.map((row) => {
-                        const { _id, position, company, location, description, created_at } = row;
-                        const selectedUser = selected.indexOf(position) !== -1;
+                      const { _id, position, company, location, description, created_at } = row;
+                      const selectedUser = selected.indexOf(position) !== -1;
 
-                        return (
-                          <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                            <TableCell padding="checkbox">
-                              <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
-                            </TableCell>
+                      return (
+                        <TableRow hover key={_id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                          <TableCell padding="checkbox">
+                            <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
+                          </TableCell>
 
-                            <TableCell component="th" scope="row" padding="none">
-                              <Stack direction="row" alignItems="center" spacing={2}>
-                                <Typography variant="subtitle2" noWrap>
-                                  {position}
-                                </Typography>
-                              </Stack>
-                            </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack direction="row" alignItems="center" spacing={2}>
+                              <Typography variant="subtitle2" noWrap>
+                                {position}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
 
-                            <TableCell align="left">{company}</TableCell>
+                          <TableCell align="left">{company}</TableCell>
 
-                            <TableCell align="left">{location}</TableCell>
+                          <TableCell align="left">{location}</TableCell>
 
-                            <TableCell align="left">{description}</TableCell>
+                          <TableCell align="left">{description}</TableCell>
 
-                            <TableCell align="left">
-                              <Label color={'success'}>
-                                {sentenceCase(
-                                  `${`${new Date(created_at).getDate()}-${new Date(created_at).getMonth()}-${new Date(
-                                    created_at
-                                  ).getFullYear()}`}`
-                                )}
-                              </Label>
-                            </TableCell>
+                          <TableCell align="left">
+                            <Label color={'success'}>
+                              {sentenceCase(
+                                `${`${new Date(created_at).getDate()}-${new Date(created_at).getMonth()}-${new Date(
+                                  created_at
+                                ).getFullYear()}`}`
+                              )}
+                            </Label>
+                          </TableCell>
 
-                            <TableCell align="right">
-                              <IconButton
-                                size="large"
-                                color="inherit"
-                                onClick={(e) => {
-                                  if (user && user.is_student) {
-                                    setCurrentTarget(row);
-                                    setOpenDia(true);
-                                    return;
-                                  }
-                                  setCurrentTarget(row);
-                                  setMyId(_id);
-                                  handleOpenMenu(e);
-                                }}
-                              >
-                                <Iconify icon={'eva:more-vertical-fill'} />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })
+                          <TableCell align="right">
+                            <IconButton
+                              size="large"
+                              color="inherit"
+
+                              onClick={(e) => {
+                                // if (user && user.is_student && !user.is_admin) {
+                                //   setCurrentTarget(row);
+                                //   setOpenDia(true);
+                                //   return;
+                                // }
+                                setCurrentTarget(row);
+                                setMyId(_id);
+                                handleOpenMenu(e);
+                              }}
+                            >
+                              <Iconify icon={'eva:more-vertical-fill'} />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
                     : null}
                 </TableBody>
 
@@ -445,8 +447,9 @@ export default function JobPage() {
           },
         }}
       >
-        {user && user.is_admin && (
+        {user && user.is_admin ? (
           <MenuItem
+            disabled={user.is_admin && currentTarget.is_approved}
             onClick={async () => {
               const res = await fetch(`${ENDPOINT}/api/jobs/update/${myId}`, {
                 method: 'PUT',
@@ -468,9 +471,17 @@ export default function JobPage() {
             }}
           >
             <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-            Approve
+            {user.is_admin && currentTarget.is_approved ? 'Approved' : 'Approve'}
           </MenuItem>
-        )}
+        ): user && user.is_student ? 
+          (<MenuItem
+            disabled={false}
+
+          >
+            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+            {true ? 'Apply' : 'Applied'}
+          </MenuItem>): (<></>)
+        }
 
         {user && user.is_alumni && (
           <>
@@ -508,7 +519,7 @@ export default function JobPage() {
           </>
         )}
       </Popover>
-      <Dialog
+      {/* <Dialog
         open={openDia}
         onClose={() => setOpenDia(false)}
         aria-labelledby="alert-dialog-title"
@@ -550,7 +561,7 @@ export default function JobPage() {
             Ok
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </>
   ) : (
     <Container>

@@ -3,11 +3,37 @@ const router = express.Router();
 const Job = require('../models/jobs');
 const Notification = require('../models/notification');
 const { authCheck } = require("../middlewares/_auth");
+const User = require("../models/user");
+
+const jwt = require('jsonwebtoken');
+
+const key = 'c0fa1bc00531bd78ef38c628449c5102aeabd49b5dc3a2a516ea6ea959d6658e';
+
+const getUser = (req, res) => {
+    const token = req.header('Authorization').replace('Bearer ', '');
+    if (!token) {
+        return res.status(401).send({ error: 'Authentication error: no token provided' });
+    }
+    try {
+        const decoded = jwt.verify(token, key);
+        req.user = decoded;
+        return (req.user)
+    } catch (err) {
+        return err
+    }
+};
 
 router.get('/', authCheck, async (req, res) => {
     try {
-        const jobs = await Job.find();
-        res.send(jobs);
+        const userId = getUser(req, res)._id
+        const user = await User.findById(userId)
+        if (user.is_admin) {
+            const jobs = await Job.find();
+            return res.send(jobs);
+        } else {
+            const jobs = await Job.find({is_approved: true});
+            return res.send(jobs);
+        }
     } catch (error) {
         res.status(500).send({ error: error.message });
     }
@@ -96,6 +122,14 @@ router.put('/update/:id', authCheck, async (req, res) => {
         // Update the job with the provided data
         updates.forEach(update => job[update] = req.body[update]);
         await job.save();
+
+        const notification = new Notification({
+            message: `New job posted by an Alumni: ${job.position} at ${job.company}`,
+            created_at: new Date(),
+            for_admin: false,
+        });
+
+        await notification.save();
 
         // Create and save the notification
         if (job.is_approved) {
