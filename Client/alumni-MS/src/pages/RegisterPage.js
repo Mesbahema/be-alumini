@@ -5,7 +5,7 @@ import { Link, Container, Typography, Divider, Stack, Button, TextField, InputAd
 import { LoadingButton } from '@mui/lab';
 // hooks
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Select from '@mui/material/Select';
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -14,6 +14,8 @@ import Iconify from '../components/iconify';
 // sections
 import { LoginForm } from '../sections/auth/login';
 import { ENDPOINT } from './LoginPage';
+import MyAlert from 'src/components/MyAlert';
+import { getCities, getProvinces } from 'src/utils/states';
 // ----------------------------------------------------------------------
 
 
@@ -37,6 +39,18 @@ function RegisterForm() {
     const [newData, setNewData] = useState('student')
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+
+    const [provinces, setProvinces] = useState([])
+    const [cities, setCities] = useState([])
+    useMemo(() => {
+        setProvinces(getProvinces())
+    }, [])
+
+    useEffect(() => {
+        if (formData?.country) {
+            setCities(getCities(formData.country))
+        }
+    }, [formData?.country])
 
     const handleClick = async (e) => {
 
@@ -127,18 +141,41 @@ function RegisterForm() {
                     value={formData.batch}
                     onChange={(e) => setFormData({ ...formData, batch: e.target.value })}
                 />
-                <TextField
-                    name="Country"
-                    label="Country"
+                <InputLabel id="demo-simple-select-label">Country</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
                     value={formData.country}
+                    label="Country"
                     onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                />
-                <TextField
+                >
+                    {
+                        provinces.map((item, key) => (
+                            <MenuItem value={item} key={key}>{item}</MenuItem>
+                        ))
+                    }
+                </Select>
+                <InputLabel id="demo-simple-select-label-city">City</InputLabel>
+                <Select
+                    sx={{ mt: 0 }}
+                    labelId="demo-simple-select-label-city"
+                    id="demo-simple-select-city"
+                    value={formData.city}
+                    label="city"
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                >
+                    {cities &&
+                        cities.map((item, key) => (
+                            <MenuItem value={item} key={key}>{item}</MenuItem>
+                        ))
+                    }
+                </Select>
+                {/* <TextField
                     name="City"
                     label="City"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                />
+                /> */}
                 <Select
                     label="Register As"
                     value={newData}
@@ -149,8 +186,8 @@ function RegisterForm() {
                     <MenuItem value='alumni'>Alumni</MenuItem>
                 </Select>
 
-                {isError && <Alert severity="error">{errorMessage}</Alert>}
-                {succ && <Alert severity="success">Registration Successful You May Login</Alert>}
+                {isError && <MyAlert severity="error">{errorMessage}</MyAlert>}
+                {succ && <MyAlert severity="success">Registration Successful You May Login</MyAlert>}
             </Stack>
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>

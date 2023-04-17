@@ -97,7 +97,7 @@ router.delete('/delete/:id', authCheck, async (req, res) => {
 });
 
 router.patch("/upload", authCheck, async (req, res) => {
-    try {
+    // try {
       upload(req, res, async function(err) {
         if (err) {
           res.status(400).send({ error: err.message });
@@ -113,9 +113,9 @@ router.patch("/upload", authCheck, async (req, res) => {
           res.send(user);
         }
       });
-    } catch (error) {
-      res.status(500).send({ error: error.message });
-    }
+    // } catch (error) {
+    //   res.status(500).send({ error: error.message });
+    // }
   });
 
 module.exports = router;

@@ -36,6 +36,7 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 import USERLIST from '../_mock/user';
 import { ENDPOINT } from './LoginPage';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import MyAlert from 'src/components/MyAlert';
 
 // ----------------------------------------------------------------------
 
@@ -154,7 +155,7 @@ const ChangeDp = ({ myFetch }) => {
               width: '80px',
               height: '80px',
             }}
-            src={currentUser.avatar ? `${ENDPOINT}/media/${currentUser.avatar}` : ''}
+            src={currentUser?.avatar ? `${ENDPOINT}/media/${currentUser?.avatar}` : ''}
           >
             {!dataLoading ? currentUser.first_name[0] : 'E'}
           </Avatar>
@@ -341,8 +342,8 @@ export default function MyProfile() {
                       <input type="file" name="resume" label="Upload Resume" />
                     </>
                   )}
-                  {isError && <Alert severity="error">{errorMessage}</Alert>}
-                  {succ && <Alert severity="success">Your Details Were Saved</Alert>}
+                  {isError && <MyAlert severity="error">{errorMessage}</MyAlert>}
+                  {succ && <MyAlert severity="success">Your Details Were Saved</MyAlert>}
                   <Button
                     variant="contained"
                     onClick={async (e) => {

@@ -25,6 +25,8 @@ import { ENDPOINT } from './LoginPage';
 
 export default function DashboardAppPage() {
   const theme = useTheme();
+
+  const [jobs, setJobs] = useState(0)
   const [formData, setFormData] = useState({
     alumni: 0,
     student: 0,
@@ -64,16 +66,17 @@ export default function DashboardAppPage() {
       return;
     }
 
-    setFormData({...formData, jobs: data.length})
+    setJobs(data.length)
 
   }
 
 
+  
 
   useEffect(() => {
     myFetch();
     fetchJobs();
-  }, [])
+  }, [jobs])
 
   return (
     <>
@@ -96,7 +99,7 @@ export default function DashboardAppPage() {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Jobs" total={formData.jobs ? formData.jobs : 0} color="warning" icon={'ant-design:windows-filled'} />
+            <AppWidgetSummary title="Jobs" total={jobs} color="warning" icon={'ant-design:windows-filled'} />
           </Grid>
 
         </Grid>

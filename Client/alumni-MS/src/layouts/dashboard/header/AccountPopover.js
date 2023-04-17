@@ -50,7 +50,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={user && ` ${ENDPOINT}/media/${user.avatar}`} alt="photoURL" />
+        <Avatar src={user && user?.avatar && ` ${ENDPOINT}/media/${user?.avatar}`} alt="photoURL" />
       </IconButton>
 
       <Popover

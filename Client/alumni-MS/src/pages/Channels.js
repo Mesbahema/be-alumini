@@ -39,6 +39,7 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
 import { ENDPOINT } from './LoginPage';
+import MyAlert from 'src/components/MyAlert';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -284,8 +285,8 @@ export default function Channels() {
                                                 ))}
                                             </List>
                                         ) : 'No Users'}
-                                    {isError && <Alert severity="error">{errorMessage}</Alert>}
-                                    {succ && <Alert severity="success">Chat Channel Successfully Created</Alert>}
+                                    {isError && <MyAlert severity="error">{errorMessage}</MyAlert>}
+                                    {succ && <MyAlert severity="success">Chat Channel Successfully Created</MyAlert>}
                                     <Button variant="contained" onClick={async (e) => {
                                         e.preventDefault();
                                         const res = await fetch(`${ENDPOINT}/api/chat/chats`, {

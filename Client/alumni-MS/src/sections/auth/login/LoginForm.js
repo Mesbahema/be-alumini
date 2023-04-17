@@ -6,6 +6,7 @@ import { LoadingButton } from '@mui/lab';
 // components
 import { ENDPOINT } from 'src/pages/LoginPage';
 import Iconify from '../../../components/iconify';
+import MyAlert from 'src/components/MyAlert';
 // ----------------------------------------------------------------------
 // import { ENDPOINT } from '../../pages/LoginPage';
 
@@ -70,7 +71,7 @@ export default function LoginForm() {
           value={formData.password}
           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
         />
-        {isError && <Alert severity="error">{errorMessage}</Alert>}
+        {isError && <MyAlert severity="error">{errorMessage}</MyAlert>}
       </Stack>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>

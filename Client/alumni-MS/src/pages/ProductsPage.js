@@ -40,6 +40,7 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 import USERLIST from '../_mock/user';
 import { ENDPOINT } from './LoginPage';
 import Offcanvas from 'react-bootstrap/Offcanvas'; // ----------------------------------------------------------------------
+import MyAlert from 'src/components/MyAlert';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Position', alignRight: false },
@@ -277,8 +278,8 @@ export default function JobPage() {
                       onChange={(e) => setData({ ...data, description: e.target.value })}
                       multiline
                     />
-                    {isError && <Alert severity="error">{errorMessage}</Alert>}
-                    {succ && <Alert severity="success">Job Added Successfully</Alert>}
+                    {isError && <MyAlert severity="error">{errorMessage}</MyAlert>}
+                    {succ && <MyAlert severity="success">Job Added Successfully</MyAlert>}
                     <Button
                       variant="contained"
                       onClick={async (e) => {
@@ -586,8 +587,8 @@ export default function JobPage() {
             onChange={(e) => setCurrentTarget({ ...currentTarget, description: e.target.value })}
             multiline
           />
-          {isError && <Alert severity="error">{errorMessage}</Alert>}
-          {succ && <Alert severity="success">Job Updated Successfully</Alert>}
+          {isError && <MyAlert severity="error">{errorMessage}</MyAlert>}
+          {succ && <MyAlert severity="success">Job Updated Successfully</MyAlert>}
           <Button
             variant="contained"
             onClick={async (e) => {

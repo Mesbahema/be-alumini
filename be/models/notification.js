@@ -9,10 +9,11 @@ const NotificationSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  for_admin:{
+  for_admin: {
     type: Boolean,
     default: false
-  }
+  },
+  seens: [String]
 });
 
 module.exports = mongoose.model('Notification', NotificationSchema);

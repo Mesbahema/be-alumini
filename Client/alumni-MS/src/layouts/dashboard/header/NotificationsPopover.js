@@ -80,7 +80,7 @@ export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState([]);
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
-  const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
+  const totalUnRead = notifications.filter((item) => item.new).length;
 
   const myFetch = async () => {
     const res2 = await fetch(`${ENDPOINT}/api/notification/`, {
@@ -99,7 +99,8 @@ export default function NotificationsPopover() {
     if (user) {
       if (adminNotifications.length && user.is_admin) {
         setNotifications(
-          adminNotifications.map((t) => ({
+          adminNotifications.map((t) => {
+            return {
             id: t._id,
             title: 'Required Approval',
             createdAt: new Date(t.createdAt),
@@ -107,7 +108,8 @@ export default function NotificationsPopover() {
             description: t.message,
             avatar: null,
             type: 'Admin',
-          }))
+            new: t?.seens ? !t?.seens.includes(user?._id) : true
+          }})
         );
         return;
       } else {
@@ -123,11 +125,35 @@ export default function NotificationsPopover() {
               description: t.message,
               avatar: null,
               type: 'User',
+              new: t?.seens ? !t?.seens.includes(user?._id) : true
             }))
         );
       }
     }
   };
+
+  const handleSeen = async () => {
+    const ids = notifications ? notifications.filter(item => item.new).map(n => n.id) : []
+    const userId = user._id
+    const res = await fetch(`${ENDPOINT}/api/notification/seen`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        ids,
+        userId
+      }),
+    });
+  }
+
+  useEffect(() => {
+    if(open) {
+
+      handleSeen()
+    }
+  }, [notifications])
 
   useEffect(() => {
     myFetch();
@@ -211,7 +237,7 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notifications.slice(0, 2).map((notification) => (
+            {notifications.filter(item => item.new).map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
           </List>
@@ -224,7 +250,7 @@ export default function NotificationsPopover() {
               </ListSubheader>
             }
           >
-            {notifications.slice(2, 5).map((notification) => (
+            {notifications.filter(item => !item.new).map((notification) => (
               <NotificationItem key={notification.id} notification={notification} />
             ))}
           </List>
