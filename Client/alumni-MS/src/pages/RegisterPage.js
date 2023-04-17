@@ -16,6 +16,7 @@ import { LoginForm } from '../sections/auth/login';
 import { ENDPOINT } from './LoginPage';
 import MyAlert from 'src/components/MyAlert';
 import { getCities, getProvinces } from 'src/utils/states';
+import batchData from 'src/data/batchData';
 // ----------------------------------------------------------------------
 
 
@@ -23,6 +24,7 @@ import { getCities, getProvinces } from 'src/utils/states';
 function RegisterForm() {
     const navigate = useNavigate();
     const [succ, setSucc] = useState(false)
+    const [phone, setPhone] = useState('+91')
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
@@ -97,6 +99,13 @@ function RegisterForm() {
         setSucc(true)
     };
 
+    const HandlePhoneChange = (e) => {
+        if (e.target.value.length < 3) return
+        if (e.target.value.length > 13) return
+        if (isNaN(e.target.value)) return
+        setPhone(e.target.value)
+    }
+
 
     return (
         <>
@@ -135,12 +144,28 @@ function RegisterForm() {
                     value={formData.last_name}
                     onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
                 />
+
                 <TextField
-                    name="Batch"
-                    label="Batch"
-                    value={formData.batch}
-                    onChange={(e) => setFormData({ ...formData, batch: e.target.value })}
+                    name="phone"
+                    label="Phone Number"
+                    value={phone}
+                    onChange={HandlePhoneChange}
                 />
+
+                <InputLabel id="demo-simple-batch-label">Batch</InputLabel>
+                <Select
+                    labelId="demo-simple-batch-label"
+                    id="demo-simple-select"
+                    value={formData.batch}
+                    label="Batch"
+                    onChange={(e) => setFormData({ ...formData, batch: e.target.value })}
+                >
+                    {
+                        batchData.map((item, key) => (
+                            <MenuItem value={item.value} key={key}>{item.title}</MenuItem>
+                        ))
+                    }
+                </Select>
                 <InputLabel id="demo-simple-select-label">Country</InputLabel>
                 <Select
                     labelId="demo-simple-select-label"
@@ -170,12 +195,7 @@ function RegisterForm() {
                         ))
                     }
                 </Select>
-                {/* <TextField
-                    name="City"
-                    label="City"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                /> */}
+
                 <Select
                     label="Register As"
                     value={newData}
