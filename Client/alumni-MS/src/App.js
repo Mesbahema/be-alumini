@@ -21,6 +21,8 @@ import MyProfile from './pages/ProfilePage';
 import Channels from './pages/Channels';
 import Chat from './pages/Chat';
 import LandingPage from './LandingPage';
+import OtpPage from './pages/OtpPage';
+import ResetPassword from './pages/ResetPassword';
 // ----------------------------------------------------------------------
 function RequireAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -64,7 +66,9 @@ export default function App() {
           <StyledChart />
           <Routes>
             <Route exact path="/home" element={<LandingPage />} />
+            <Route exact path="/reset-password" element={<ResetPassword />} />
             <Route exact path="/login" element={<LoginPage />} />
+            <Route exact path="/otp" element={<OtpPage />} />
             <Route exact path="/register" element={<RegisterPage />} />
 
             <Route element={<RequireAuth />}>

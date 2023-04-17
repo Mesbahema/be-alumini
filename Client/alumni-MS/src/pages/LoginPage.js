@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import useResponsive from '../hooks/useResponsive';
 // components
 import Logo from '../components/logo';
-import Iconify from '../components/iconify';
+import { Link as RouterLink } from 'react-router-dom';
 // sections
 import { LoginForm } from '../sections/auth/login';
 
