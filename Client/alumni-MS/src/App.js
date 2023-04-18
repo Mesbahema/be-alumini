@@ -23,6 +23,7 @@ import Chat from './pages/Chat';
 import LandingPage from './LandingPage';
 import OtpPage from './pages/OtpPage';
 import ResetPassword from './pages/ResetPassword';
+import { useNavigate } from "react-router-dom";
 // ----------------------------------------------------------------------
 function RequireAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

@@ -5,10 +5,16 @@ const bcrypt = require('bcryptjs');
 
 router.post('/register', async (req, res) => {
     try {
+        const { email } = req.body
+        const founded = await User.findOne({ email })
+        if (founded) {
+            res.status(400).send({ error: 'user already exist!' });
+        }
         const user = new User(req.body);
         if (user.is_admin) {
             user.is_active = true;
         }
+
         const hashedPassword = await bcrypt.hash(user.password, 10);
         user.password = hashedPassword;
         await user.save();
