@@ -473,14 +473,31 @@ export default function JobPage() {
             <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
             {user.is_admin && currentTarget.is_approved ? 'Approved' : 'Approve'}
           </MenuItem>
-        ): user && user.is_student ? 
+        ) : user && user.is_student ?
           (<MenuItem
             disabled={false}
+
+            onClick={async () => {
+              const res = await fetch(`${ENDPOINT}/api/jobs/apply/${myId}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+              });
+
+              const data = await res.json();
+              if (!res.ok) {
+                console.log(data.error);
+                return;
+              }
+              myFetch();
+            }}
 
           >
             <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
             {true ? 'Apply' : 'Applied'}
-          </MenuItem>): (<></>)
+          </MenuItem>) : (<></>)
         }
 
         {user && user.is_alumni && (

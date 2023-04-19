@@ -144,6 +144,28 @@ router.put('/update/:id', authCheck, async (req, res) => {
         res.status(500).send({ error: error.message });
     }
 });
+router.put('/apply/:id', authCheck, async (req, res) => {
+    const userId = getUser(req, res)._id
+    const user = await User.findById(userId)
+    try {
+        const job = await Job.findById(req.params.id);
+        if (!job) {
+            return res.status(404).send({ error: 'Job not found' });
+        }
+
+        const notification = new Notification({
+            message: `An student with name ${user.first_name} ${user.last_name} has applied for job: ${job.position} at ${job.company}`,
+            created_at: new Date(),
+            for_admin: true,
+        });
+
+        await notification.save();
+
+        res.send(job);
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+});
 
 
 
